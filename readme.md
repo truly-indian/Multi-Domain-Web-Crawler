@@ -14,9 +14,9 @@
 - First of all please setup the required tools and libraries. 
 - Setup vs code, and install all the python extensions required for basic python programming. 
 - Download and install python from the official python website. 
-- Setup the paths if required according to you OS. 
+- Setup the paths if required according to your OS. 
 - Navigate to the multiDomainCrawler.py file and run the below command
- - scrapy crawl multi_domain_spider
+ -> scrapy crawl multi_domain_spider
 - That's all your crawled data would be present in a output file starting with the domain name. 
 
 # Future Scope of this Project
