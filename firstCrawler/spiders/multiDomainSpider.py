@@ -39,4 +39,4 @@ class MultiDomainSpider(scrapy.Spider):
 
         print("item list: ", itemList)
         json_data = json.dumps(itemList, indent=4, ensure_ascii=False)
-        Path(fileName).write_text(json_data, encoding='utf-8')
+        Path(f"{domain}.json").write_text(json_data, encoding='utf-8')
