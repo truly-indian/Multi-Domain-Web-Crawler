@@ -27,7 +27,7 @@ class MultiDomainSpider(scrapy.Spider):
         domain = response.url.split("/")[2]
         pattern = self.domain_patterns.get(domain)
         fileName = f"{domain}.html"
-        Path(fileName+"raw").write_bytes(response.body)
+        #Path(fileName+"raw").write_bytes(response.body)
 
         # Extract data
         cards = response.css(".product_pod")
@@ -44,7 +44,6 @@ class MultiDomainSpider(scrapy.Spider):
             self.processed_urls.add(item_url)
             itemList.append({"title": title, "price": price, "url": item_url})
 
-        print("item list: ", itemList)
         jsonFileName = f"{domain}.json"
 
         # Load existing data
