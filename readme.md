@@ -19,6 +19,11 @@
  - scrapy crawl multi_domain_spider
 - That's all your crawled data would be present in a output file starting with the domain name. 
 
+# Future Scope of this Project
+- We can even integrate a data store like mongoDB to save the crawled data for future use. 
+- We can even send this crawled data to some metabase pipelines using event streaming platforms like kafka. 
+
 # Note**
 - This script is only handling the saving of json data for [bookstoscrap.com](https://books.toscrape.com/)
 - If you want to handle proper saving of data you need to write if else conditions for the same based on your domain name. 
+
