@@ -1,5 +1,5 @@
 # Multi Domain Web Crawler
-- It is a web crawler developed using scrapy and python. A user can give multiple domains and the domain_patters regex to crawl different pages of a website. 
+- It is a web crawler developed using scrapy and python. A user can give multiple domains and the domain_patterns regex to crawl different pages of a website. 
 
 # Functionality
 - A user can provide the start_urls or domains in the start_url array in the script. 
