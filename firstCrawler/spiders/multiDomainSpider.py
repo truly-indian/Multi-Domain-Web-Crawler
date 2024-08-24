@@ -39,7 +39,7 @@ class MultiDomainSpider(CrawlSpider):
     def log_discovered_url(self, response):
         domain = response.url.split("/")[2]
         pattern = self.domain_patterns.get(domain)
-        print(f"Discovered URL for {domain} -> : [{response.url}] which follows the regex pattern: {pattern}")
+        print(f"Discovered URL for {domain} -> : [{domain}] which follows the regex pattern: {pattern}")
 
     def parse_start_url(self, response):
         self.log_discovered_url(response)
