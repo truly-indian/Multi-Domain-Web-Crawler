@@ -1,69 +1,45 @@
-from pathlib import Path
-import scrapy
-import re
-import json
+from scrapy.spiders import CrawlSpider, Rule
+from scrapy.linkextractors import LinkExtractor
 
-class MultiDomainSpider(scrapy.Spider):
+class MultiDomainSpider(CrawlSpider):
     name = "multi_domain_spider"
-
+    
+    # Example start URLs
     start_urls = [
         'https://books.toscrape.com/',
-        #'https://rapidfacto.com/'
+        'https://rapidfacto.com/',
+        'https://quotes.toscrape.com/'
     ]
-
+    
     domain_patterns = {
-        #'books.toscrape.com': r'https://books.toscrape.com/catalogue/category/books/mystery_3/index.html',
-        #'quotes.toscrape.com': r'https://quotes.toscrape.com/tag',
         'books.toscrape.com': r'https://books.toscrape.com/catalogue/.*',
-        #'quotes.toscrape.com': r'https://quotes.toscrape.com/tag/.*',
-        #'www.rapidfacto.com': r'https://www.rapidfacto.com/pricing/.*'
+        'www.rapidfacto.com': r'https://www.rapidfacto.com/pricing/.*',
+        'quotes.toscrape.com': r'https://quotes.toscrape.com/tag/.*'
     }
 
-    def __init__(self, *args, **kwargs):
-        super(MultiDomainSpider, self).__init__(*args, **kwargs)
-        self.processed_urls = set()
-    
-    def parse(self, response):
+    rules = (
+        # Rule for the specific domain with a hardcoded regex pattern
+        Rule(
+            LinkExtractor(allow=[domain_patterns['books.toscrape.com']]),
+            callback='log_discovered_url',
+            follow=True
+        ),
+        Rule(
+            LinkExtractor(allow=[domain_patterns['www.rapidfacto.com']]),
+            callback='log_discovered_url',
+            follow=True
+        ),
+        Rule(
+            LinkExtractor(allow=[domain_patterns['quotes.toscrape.com']]),
+            callback='log_discovered_url',
+            follow=True
+        )
+    )
+
+    def log_discovered_url(self, response):
         domain = response.url.split("/")[2]
         pattern = self.domain_patterns.get(domain)
-        fileName = f"{domain}.html"
-        #Path(fileName+"raw").write_bytes(response.body)
+        print(f"Discovered URL for {domain} -> : [{domain}] which follows the regex pattern: {pattern}")
 
-        # Extract data
-        cards = response.css(".product_pod")
-        itemList = []
-        for card in cards:
-            title = card.css("h3>a::text").get()
-            price = card.css(".price_color::text").get()
-            item_url = response.urljoin(card.css("h3>a::attr(href)").get())
-
-            # Skip if this URL has already been processed
-            if item_url in self.processed_urls:
-                continue
-            
-            self.processed_urls.add(item_url)
-            itemList.append({"title": title, "price": price, "url": item_url})
-
-        jsonFileName = f"{domain}.json"
-
-        # Load existing data
-        if Path(jsonFileName).exists():
-            with open(jsonFileName, 'r', encoding='utf-8') as file:
-                existing_data = json.load(file)
-        else:
-            existing_data = []
-
-        # Append new data to existing data
-        existing_data.extend(itemList)
-
-        # Write updated data back to file
-        with open(jsonFileName, 'w', encoding='utf-8') as file:
-            json.dump(existing_data, file, indent=4, ensure_ascii=False)
-
-        # Follow the links which are matching the pattern
-        for link in response.css('a::attr(href)').getall():
-            full_url = response.urljoin(link)
-            if re.match(pattern, full_url):
-                yield response.follow(full_url, callback=self.parse)
-            else:
-                self.logger.warning(f"No pattern found for domain: {domain}, {full_url}")
+    def parse_start_url(self, response):
+        self.log_discovered_url(response)
